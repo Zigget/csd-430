@@ -1,0 +1,79 @@
+/*
+Samuel Sidzyik
+CSD-430
+Module 4.2
+9/6/26
+*/
+
+/* Page layout */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+    margin: 0;
+    padding: 40px;
+    color: #333;
+}
+
+/* Container for forms and display pages */
+.container {
+    background: #fff;
+    padding: 25px;
+    max-width: 700px;
+    margin: auto;
+    border-radius: 8px;
+    box-shadow: 0 0 8px rgba(0,0,0,0.1);
+}
+
+/* Headings */
+h1, h2, h3 {
+    margin-top: 0;
+    color: #444;
+}
+
+/* Labels and inputs */
+label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: bold;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="number"],
+select,
+textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+/* Buttons */
+button,
+input[type="submit"] {
+    background-color: #4a90e2;
+    color: white;
+    padding: 10px 18px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+button:hover,
+input[type="submit"]:hover {
+    background-color: #357ab8;
+}
+
+/* Display page paragraphs */
+p {
+    margin: 10px 0;
+}
+
+/* Spacing utility */
+.mt-20 {
+    margin-top: 20px;
+}
