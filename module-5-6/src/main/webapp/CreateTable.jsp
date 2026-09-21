@@ -24,7 +24,7 @@
   <%
 	 
 	  try{
-		  
+		  out.print(setupDB.ConfigProject());
 		  out.print(setupDB.createTable());
 	  }
 	  catch(Exception e){
