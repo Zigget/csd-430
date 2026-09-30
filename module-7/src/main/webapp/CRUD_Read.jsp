@@ -12,7 +12,7 @@
 
   <jsp:useBean id='myDB' class='database.DbBean' />
 
-  <br /> <a href="index_02.html">Screen 1</a> <br />
+  <br /> <a href="index_02.html">Previous Screen</a> <br />
     
     <%
     if(request.getMethod().equals("GET")){

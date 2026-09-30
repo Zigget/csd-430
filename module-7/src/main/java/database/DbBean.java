@@ -101,7 +101,7 @@ public class DbBean implements java.io.Serializable {
     // ***************************************************************
     // ***************************************************************
     
-    public void createRecord(String film_name, int film_releaseDate, int film_runtime, 
+    public void createRecord(int film_id, String film_name, int film_releaseDate, int film_runtime, 
     		                   String film_director) {
     	
     	try {
@@ -121,15 +121,16 @@ public class DbBean implements java.io.Serializable {
     	
     	try {
 
-    		String sql = "INSERT INTO film(film_name, film_releaseDate, film_runtime, film_director" + 
-    		   "VALUES(?, ?, ?, ?)";
+    		String sql = "INSERT INTO film(film_id, film_name, film_releaseDate, film_runtime, film_director)" + 
+    		   "VALUES(?, ?, ?, ?, ?)";
     		
     		java.sql.PreparedStatement sqlStatement = connection.prepareStatement(sql);
     		
-    		sqlStatement.setString(1, film_name );    		
-    		sqlStatement.setInt(2, film_releaseDate );    		
-    		sqlStatement.setInt(3, film_runtime );    		
-    		sqlStatement.setString(4, film_director );
+    		sqlStatement.setInt(1, film_id );
+    		sqlStatement.setString(2, film_name );    		
+    		sqlStatement.setInt(3, film_releaseDate );    		
+    		sqlStatement.setInt(4, film_runtime );    		
+    		sqlStatement.setString(5, film_director );
     		
     		sqlStatement.executeUpdate();
     		
@@ -152,7 +153,8 @@ public class DbBean implements java.io.Serializable {
     	StringBuilder dataStringBuilder = new StringBuilder();
 
         java.sql.ResultSet resultSet = null;
-    	
+        int max = 0;
+        
     	try {
     		
     		Class.forName("com.mysql.cj.jdbc.Driver");
@@ -173,7 +175,7 @@ public class DbBean implements java.io.Serializable {
     		
         	resultSet = statement.executeQuery("SELECT max(film_id) as max_value from film");
         	if (resultSet.next()) {
-                int max = resultSet.getInt(1) + 1;
+                max = resultSet.getInt(1) + 1;
                 dataStringBuilder.append("<br /><br />"); 
                 dataStringBuilder.append("<label for='film_name'>Film Name</label>");
             	dataStringBuilder.append("&nbsp&nbsp");
@@ -192,6 +194,14 @@ public class DbBean implements java.io.Serializable {
 
     	dataStringBuilder.append("<form method='post' action='" + requestURL + "'>");
     	dataStringBuilder.append("<br />");  
+    	
+    	// ---------------------------------------------------------------
+        // ---------------------------------------------------------------
+        // ------------------------ Capture Film ID ----------------------
+        // ---------------------------------------------------------------
+        // ---------------------------------------------------------------
+    	
+    	dataStringBuilder.append("<input type='hidden' name='film_id' value='" + max + "' />");
 
         // ---------------------------------------------------------------
         // ---------------------------------------------------------------
@@ -218,7 +228,7 @@ public class DbBean implements java.io.Serializable {
     	
     	if( requestURL.equals("CRUD_Create.jsp") ) {
         	
-            dataStringBuilder.append("<label for='film_releaseDate'>Release Date</label>");
+            dataStringBuilder.append("<label for='film_releaseDate'>Release Year</label>");
             dataStringBuilder.append("&nbsp&nbsp");   
             dataStringBuilder.append("<input type='text' name='film_releaseDate' maxlength='20'>");      	
             dataStringBuilder.append("<br /><br />");   
@@ -256,14 +266,13 @@ public class DbBean implements java.io.Serializable {
 
     	dataStringBuilder.append("<label for='film_director'>Director</label>");
     	dataStringBuilder.append("&nbsp&nbsp");   
-    	dataStringBuilder.append("<input type='text' name='film_director>");
-    	dataStringBuilder.append("</input>");  
+    	dataStringBuilder.append("<input type='text' name='film_director'>");
     	dataStringBuilder.append("<br /><br />");  
     	
         // ---------------------------------------------------------------
         // ------------------------ Close Director -------------------
         // ---------------------------------------------------------------
-    	dataStringBuilder.append("<br /><br />");  
+    	
     	dataStringBuilder.append("<input type='submit' value='Submit'>");
     	
     	dataStringBuilder.append("</form>");
