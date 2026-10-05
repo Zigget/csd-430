@@ -8,11 +8,11 @@
 </head>
 <body>
 
-  <h1>CruD Create</h1>
+  <h1>Crud Create</h1>
   
   <jsp:useBean id='myDB' class='database.DbBean' />
   
-    <br /> <a href="index_02.html">index 02.html</a> <br />
+    <br /> <a href="index_02.html">Previous Screen</a> <br />
   
     <%
     if(request.getMethod().equals("GET")){
@@ -26,12 +26,11 @@
     <%
     if(request.getMethod().equals("POST")){
     	
-    	myDB.createRecord(request.getParameter("film_name"),
+    	myDB.createRecord(Integer.parseInt(request.getParameter("film_id")),
+    			request.getParameter("film_name"),
     			Integer.parseInt(request.getParameter("film_releaseDate")),
     			Integer.parseInt(request.getParameter("film_runtime")),
     			request.getParameter("film_director"));
-    	
-    	out.print(myDB.read(Integer.parseInt(request.getParameter("year"))));
 
     	out.println("<br />");
 

@@ -54,8 +54,8 @@ public class DbBean implements java.io.Serializable {
     // ***************************************************************
     // ***************************************************************
 
-    public String updateRecord(String winningTeam, String winningCity, int year, 
-            String loserTeam, String loserCity) {
+    public String updateRecord(int film_id, String film_name, int film_releaseDate, int film_runtime, 
+            String film_director) {
     	
     	try {
     		
@@ -72,20 +72,21 @@ public class DbBean implements java.io.Serializable {
     		System.out.print("SQL Exception" + sqle);
     	}
     	
-		String sql = "UPDATE world_series SET team = ?, city = ?,  loserTeam = ?, loserCity = ? WHERE year_t = ?";
-	    		
-		try {
-	    		java.sql.PreparedStatement sqlStatement = connection.prepareStatement(sql);
-	    		
-	    		sqlStatement.setString(1, winningTeam );    		
-	    		sqlStatement.setString(2, winningCity );    		
-	    		sqlStatement.setString(3, loserTeam );    		
-	    		sqlStatement.setString(4, loserCity );
-	    		
-	    		sqlStatement.setInt(5, year ); 
-	    		
-	    		sqlStatement.executeUpdate();
-			    statement.close();
+    	try {
+			String sql = "UPDATE film SET film_id = ?, film_name = ?, film_releaseDate = ?, film_runtime = ?, film_director = ? where film_id = ?";
+			
+			java.sql.PreparedStatement sqlStatement = connection.prepareStatement(sql);
+			
+			sqlStatement.setInt(1, film_id );
+			sqlStatement.setString(2, film_name );    		
+			sqlStatement.setInt(3, film_releaseDate );    		
+			sqlStatement.setInt(4, film_runtime );    		
+			sqlStatement.setString(5, film_director );
+			sqlStatement.setInt(6, film_id );
+			
+			sqlStatement.executeUpdate();
+			
+			sqlStatement.close();
 		}
     	catch(java.sql.SQLException sqle){
     		
@@ -101,40 +102,41 @@ public class DbBean implements java.io.Serializable {
     // ***************************************************************
     // ***************************************************************
     
-    public void createRecord(String film_name, int film_releaseDate, int film_runtime, 
-    		                   String film_director) {
-    	
-    	try {
-    		
-    		Class.forName("com.mysql.cj.jdbc.Driver");
-    		String url = "jdbc:mysql://localhost:3306/csd430?";
-    		connection = java.sql.DriverManager.getConnection(url + "user=student1&password=pass");
-    	}
-    	catch(ClassNotFoundException cnfe) {
-    		
-    		System.out.print("SQL Exception" + cnfe);
-    	}
-    	catch(java.sql.SQLException sqle){
-    		
-    		System.out.print("SQL Exception" + sqle);
-    	}
-    	
-    	try {
+    public void createRecord(int film_id, String film_name, int film_releaseDate, int film_runtime, 
+            String film_director) {
 
-    		String sql = "INSERT INTO film(film_name, film_releaseDate, film_runtime, film_director" + 
-    		   "VALUES(?, ?, ?, ?)";
-    		
-    		java.sql.PreparedStatement sqlStatement = connection.prepareStatement(sql);
-    		
-    		sqlStatement.setString(1, film_name );    		
-    		sqlStatement.setInt(2, film_releaseDate );    		
-    		sqlStatement.setInt(3, film_runtime );    		
-    		sqlStatement.setString(4, film_director );
-    		
-    		sqlStatement.executeUpdate();
-    		
-    		sqlStatement.close();
-    	}
+		try {
+		
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			String url = "jdbc:mysql://localhost:3306/csd430?";
+			connection = java.sql.DriverManager.getConnection(url + "user=student1&password=pass");
+		}
+		catch(ClassNotFoundException cnfe) {
+		
+			System.out.print("SQL Exception" + cnfe);
+		}
+		catch(java.sql.SQLException sqle){
+		
+			System.out.print("SQL Exception" + sqle);
+		}
+		
+		try {
+		
+			String sql = "INSERT INTO film(film_id, film_name, film_releaseDate, film_runtime, film_director)" + 
+					"VALUES(?, ?, ?, ?, ?)";
+			
+			java.sql.PreparedStatement sqlStatement = connection.prepareStatement(sql);
+			
+			sqlStatement.setInt(1, film_id );
+			sqlStatement.setString(2, film_name );    		
+			sqlStatement.setInt(3, film_releaseDate );    		
+			sqlStatement.setInt(4, film_runtime );    		
+			sqlStatement.setString(5, film_director );
+			
+			sqlStatement.executeUpdate();
+			
+			sqlStatement.close();
+		}
     	catch(java.sql.SQLException sqle) {
     		
     	}
@@ -152,6 +154,7 @@ public class DbBean implements java.io.Serializable {
     	StringBuilder dataStringBuilder = new StringBuilder();
 
         java.sql.ResultSet resultSet = null;
+        int max = 0;
     	
     	try {
     		
@@ -173,7 +176,7 @@ public class DbBean implements java.io.Serializable {
     		
         	resultSet = statement.executeQuery("SELECT max(film_id) as max_value from film");
         	if (resultSet.next()) {
-                int max = resultSet.getInt(1) + 1;
+                max = resultSet.getInt(1) + 1;
                 dataStringBuilder.append("<br /><br />"); 
                 dataStringBuilder.append("<label for='film_name'>Film Name</label>");
             	dataStringBuilder.append("&nbsp&nbsp");
@@ -256,16 +259,14 @@ public class DbBean implements java.io.Serializable {
 
     	dataStringBuilder.append("<label for='film_director'>Director</label>");
     	dataStringBuilder.append("&nbsp&nbsp");   
-    	dataStringBuilder.append("<input type='text' name='film_director>");
-    	dataStringBuilder.append("</input>");  
+    	dataStringBuilder.append("<input type='text' name='film_director'>");
     	dataStringBuilder.append("<br /><br />");  
     	
         // ---------------------------------------------------------------
         // ------------------------ Close Director -------------------
         // ---------------------------------------------------------------
-    	dataStringBuilder.append("<br /><br />");  
-    	dataStringBuilder.append("<input type='submit' value='Submit'>");
     	
+    	dataStringBuilder.append("<input type='submit' value='Submit'>");
     	dataStringBuilder.append("</form>");
 
         // ---------------------------------------------------------------
@@ -311,7 +312,12 @@ public class DbBean implements java.io.Serializable {
     	StringBuilder dataStringBuilder = new StringBuilder();
     	
     	// Add Data to StringBuilder
-    	dataStringBuilder.append("<form method='post' action='" + requestURL + "'>\n");    	
+    	if( requestURL.equals("CRUD_Update.jsp")){
+    		dataStringBuilder.append("<form method='get' action='" + requestURL + "'>\n");
+    	}
+    	else {
+    		dataStringBuilder.append("<form method='post' action='" + requestURL + "'>\n");
+    	}
     	dataStringBuilder.append("<label>Select a Film ID</label>&nbsp;&nbsp;&nbsp;\n");    	
     	dataStringBuilder.append("<br /> \n");    	
     	dataStringBuilder.append("<label for=\\\"film_id\\\">Select an ID:</label>\n");    	
@@ -359,7 +365,7 @@ public class DbBean implements java.io.Serializable {
     // ***************************************************************
     // ***************************************************************
 
-    public String read(int year) {
+    public String read(int film_id) {
     	
     	StringBuilder dataStringBuilder = new StringBuilder();    	
     	
@@ -379,7 +385,7 @@ public class DbBean implements java.io.Serializable {
         
     	}
         try{
-        	resultSet = statement.executeQuery("SELECT * FROM film WHERE film_id = " + year);
+        	resultSet = statement.executeQuery("SELECT * FROM film WHERE film_id = " + film_id);
         }
         catch(java.sql.SQLException e){
         }
@@ -419,7 +425,7 @@ public class DbBean implements java.io.Serializable {
     // ***************************************************************
     // ***************************************************************
 
-    public String delete(int year) {
+    public String delete(int film_id) {
     	
     	StringBuilder dataStringBuilder = new StringBuilder();    	
     	
@@ -438,9 +444,8 @@ public class DbBean implements java.io.Serializable {
     	}
         try{
         	
-        	statement.executeUpdate("DELETE FROM World_Series WHERE year_t = " + year);
+        	statement.executeUpdate("DELETE FROM film WHERE film_id = " + film_id);
         	
-        	dataStringBuilder.append("The record has been deleted.");
         }
         catch(java.sql.SQLException e){
         	

@@ -9,32 +9,15 @@
 <body>
 
     <jsp:useBean id='myDB' class='database.DbBean' />
-    
+    <h1>Select Film to Update</h1>
+	<a href="index_02.html">Previous Screen</a><br><br>
+	
     <%
     if(request.getMethod().equals("GET")){
-    	
-    	String value = myDB.formGetCreateOrUpdate("CRUD_Update_2.jsp");
-    	
-    	out.print(value);
-    }
-    %>
-    
+   	%>
+		<%= myDB.formGetPK("CRUD_Update.jsp")%>
+    	<%= myDB.readAll()%>
     <%
-    if(request.getMethod().equals("POST")){
-    	
-    	myDB.updateRecord(request.getParameter("film_name"),
-    			Integer.parseInt(request.getParameter("film_releaseDate")),
-    			Integer.parseInt(request.getParameter("film_runtime")),
-    			request.getParameter("film_director"));
-
-    	
-    	out.println("<br /><br />");
-
-    	out.print(myDB.read(Integer.parseInt(request.getParameter("film_id"))));
-    	
-    	out.println("<br /><br />");
-    	
-    	out.print(myDB.readAll());
     }
     %>
     
